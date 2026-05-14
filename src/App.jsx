@@ -49,6 +49,18 @@ export default function App() {
           </div>
 
           <div className="portal-header-spacer" />
+          </div>
+          <div className="portal-user">
+          {authLoading ? (
+            <span>Checking access...</span>
+          ) : user ? (
+            <>
+              <span>{user.userDetails}</span>
+              <a href="/logout">Sign out</a>
+            </>
+          ) : (
+            <a href="/login">Sign in</a>
+          )}
         </div>
       </header>
 
@@ -90,19 +102,6 @@ export default function App() {
       {page === "open" && <OpenIncidents />}
       {page === "employee" && (<EmployeeRegistrationIncidents isOperator={isOperator} /> )}
       {page === "kpi" && <KpiSummary />}
-
-      <div className="portal-user">
-        {authLoading ? (
-          <span>Checking access...</span>
-        ) : user ? (
-          <>
-            <span>{user.userDetails}</span>
-            <a href="/logout">Sign out</a>
-          </>
-        ) : (
-          <a href="/login">Sign in</a>
-        )}
-      </div>
 
       <footer className="portal-footer">
         <div className="portal-footer-inner">

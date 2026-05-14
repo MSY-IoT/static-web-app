@@ -1204,7 +1204,7 @@ tbody tr:hover td {
 
 .portal-title {
   color: #071d49;
-  font-size: 24px;
+  font-size: 34px;
   font-weight: 900;
   letter-spacing: -0.02em;
 }
@@ -1951,4 +1951,56 @@ td span {
   padding: 12px 14px;
   font-weight: 700;
   font-size: 13px;
+}
+
+/* Fix portal user / sign-out placement */
+
+.portal-header-centered {
+  grid-template-columns: 120px 1fr 220px !important;
+}
+
+.portal-user {
+  justify-self: end;
+  max-width: 220px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #d9dee8;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.portal-user span {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portal-user a {
+  color: #8a1538;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.portal-user a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .portal-header-centered {
+    grid-template-columns: 1fr !important;
+  }
+
+  .portal-user {
+    justify-self: center;
+    max-width: 100%;
+  }
+}
+
+/* Make main front-page / portal title dark red */
+
+.portal-title {
+  color: #8a1538 !important;
 }

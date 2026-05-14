@@ -424,7 +424,7 @@ export default function LiveOperations({ isOperator }) {
               <strong>{summary.RefreshedAst || "—"}</strong>
             </div>
             <div>
-              Endpoint status: <strong>{data?.status || "—"}</strong>
+              status: <strong>{data?.status || "—"}</strong>
             </div>
           </section>
         </>
