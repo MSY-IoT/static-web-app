@@ -3,7 +3,6 @@ import {
   AlertTriangle,
   Clock,
   RefreshCw,
-  ShieldAlert,
 } from "lucide-react";
 
 const ENDPOINT = import.meta.env.VITE_DASHBOARD_ENDPOINT;
@@ -101,16 +100,11 @@ export default function OpenIncidents() {
     <main className="page">
       <section className="header">
         <div>
-          <div className="eyebrow">
-            <ShieldAlert size={18} />
-            IoT Attendance Monitoring
-          </div>
 
           <h1>Open Incidents</h1>
 
           <p>
-            Active incidents that require monitoring, follow-up, or manual
-            intervention.
+            Active device incidents requiring monitoring, follow-up, or manual intervention.
           </p>
         </div>
 

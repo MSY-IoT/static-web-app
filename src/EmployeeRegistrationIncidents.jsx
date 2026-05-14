@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   RefreshCw,
   Search,
-  UserCheck,
 } from "lucide-react";
 
 const INCIDENTS_ENDPOINT = import.meta.env.VITE_EMPLOYEE_INCIDENTS_ENDPOINT;
@@ -259,16 +258,11 @@ export default function EmployeeRegistrationIncidents() {
     <main className="page">
       <section className="header">
         <div>
-          <div className="eyebrow">
-            <UserCheck size={18} />
-            IoT Attendance Monitoring
-          </div>
 
           <h1>Employee Registration Incidents</h1>
 
           <p>
-            Review invalid employee registration records, select an incident,
-            and close it after HR/admin verification.
+            Review invalid employee registration records and close incidents after verification.
           </p>
         </div>
 
@@ -277,8 +271,7 @@ export default function EmployeeRegistrationIncidents() {
             <RefreshCw size={16} className={refreshing ? "spin" : ""} />
             Refresh now
           </button>
-
-          <small>Auto-refresh every {POLL_INTERVAL_MS / 1000}s</small>
+        <small>Auto-refresh every {POLL_INTERVAL_MS / 1000}s</small>
         </div>
       </section>
 
@@ -495,12 +488,9 @@ export default function EmployeeRegistrationIncidents() {
                     <th>Employee ID</th>
                     <th>Main Error</th>
                     <th>Error Type</th>
-                    <th>Incident Status</th>
+                    <th>Status</th>
                     <th>First Detected</th>
                     <th>Last Checked</th>
-                    <th>Closed By</th>
-                    <th>Closed Time</th>
-                    <th>Closure Notes</th>
                 </tr>
                 </thead>
 
@@ -528,11 +518,8 @@ export default function EmployeeRegistrationIncidents() {
                             {getIncidentStatus(incident)}
                         </span>
                         </td>
-                        <td>{formatDate(incident.FirstDetectedAst)}</td>
-                        <td>{formatDate(incident.LastCheckedAst)}</td>
-                        <td>{incident.ClosedBy || "—"}</td>
-                        <td>{formatDate(incident.ClosedAst)}</td>
-                        <td>{incident.ClosureNotes || "—"}</td>
+                            <td>{formatDate(incident.FirstDetectedAst)}</td>
+                            <td>{formatDate(incident.LastCheckedAst)}</td>
                     </tr>
                     );
                 })}

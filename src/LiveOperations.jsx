@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Activity,
   AlertTriangle,
   CheckCircle2,
   Clock,
@@ -151,7 +150,9 @@ export default function LiveOperations() {
   }, []);
 
   const summary = data?.summary?.[0] || {};
-  const tiles = data?.summaryTiles || [];
+  const tiles = (data?.summaryTiles || []).filter(
+    (tile) => !String(tile.Title || "").toLowerCase().includes("incident")
+  );
 
   const devices = useMemo(() => {
     return [...(data?.devices || [])].sort(
@@ -224,14 +225,9 @@ export default function LiveOperations() {
     <main className="page">
       <section className="header">
         <div>
-          <div className="eyebrow">
-            <Activity size={18} />
-            IoT Attendance Monitoring
-          </div>
           <h1>Operational Summary Dashboard</h1>
           <p>
-            Live device health, heartbeat freshness, and controlled device action
-            from the Azure Function App endpoint.
+            Live device health, heartbeat freshness, and controlled device action.
           </p>
         </div>
 
@@ -240,12 +236,7 @@ export default function LiveOperations() {
             <RefreshCw size={16} className={refreshing ? "spin" : ""} />
             Refresh now
           </button>
-          <small>
-            Auto-refresh every {POLL_INTERVAL_MS / 1000}s
-            {lastClientRefresh
-              ? ` • Last client refresh: ${lastClientRefresh.toLocaleTimeString()}`
-              : ""}
-          </small>
+            <small>Auto-refresh every {POLL_INTERVAL_MS / 1000}s</small>
         </div>
       </section>
 
@@ -298,8 +289,8 @@ export default function LiveOperations() {
                       <th>Status</th>
                       <th>Last heartbeat</th>
                       <th>Age</th>
-                      <th>Open incidents</th>
-                      <th>Latest incident</th>
+                      <th>Open</th>
+                      <th>Latest</th>
                       {/* <th>Recommended action</th> */}
                     </tr>
                   </thead>

@@ -19,13 +19,18 @@ import {
   CheckCircle2,
   Clock,
   RefreshCw,
-  TrendingUp,
   Zap,
 } from "lucide-react";
 
 const KPI_ENDPOINT = import.meta.env.VITE_KPI_ENDPOINT;
 
 const COLORS = ["#2563eb", "#059669", "#f59e0b", "#dc2626", "#64748b"];
+const POLL_INTERVAL_MS = 30000;
+
+function formatShortDate(value) {
+  if (!value) return "";
+  return String(value).substring(5, 10);
+}
 
 function normalizeIncidentType(type) {
   const map = {
@@ -110,9 +115,13 @@ export default function KpiSummary() {
     return () => clearInterval(timer);
   }, []);
 
-  const incidents = data?.recentIncidents || [];
+  const incidents = (data?.recentIncidents || []).filter(
+    (item) => item.IncidentType !== "TEST_INCIDENT"
+  );
   const summary = data?.summary || {};
-  const incidentsByType = data?.incidentsByType || [];
+  const incidentsByType = (data?.incidentsByType || []).filter(
+    (item) => item.IncidentType !== "TEST_INCIDENT"
+  );
   const incidentsBySite = data?.incidentsBySite || [];
   const incidentTrend = data?.incidentTrend || [];
 
@@ -120,14 +129,9 @@ export default function KpiSummary() {
     <main className="page">
       <section className="header">
         <div>
-          <div className="eyebrow">
-            <TrendingUp size={18} />
-            IoT Attendance Monitoring
-          </div>
           <h1>KPI Summary Dashboard</h1>
           <p>
-            Management summary, incident trends, recovery performance, and site
-            comparison.
+            Incident trends, site performance, recovery time, and remote resolution metrics.
           </p>
         </div>
 
@@ -136,7 +140,7 @@ export default function KpiSummary() {
             <RefreshCw size={16} className={refreshing ? "spin" : ""} />
             Refresh now
           </button>
-          <small>Auto-refresh every 60 seconds</small>
+            <small>Auto-refresh every {POLL_INTERVAL_MS / 1000}s</small>
         </div>
       </section>
 
@@ -197,7 +201,10 @@ export default function KpiSummary() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={incidentTrend}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="StartDate" />
+                    <XAxis
+                      dataKey="StartDate"
+                      tickFormatter={formatShortDate}
+                    />
                     <YAxis allowDecimals={false} />
                     <Tooltip />
                     <Line
