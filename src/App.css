@@ -1926,3 +1926,29 @@ td .status {
 td span {
   text-align: center;
 }
+
+.portal-user {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  color: #071d49;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.portal-user a {
+  color: #8a1538;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.role-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 13px;
+}

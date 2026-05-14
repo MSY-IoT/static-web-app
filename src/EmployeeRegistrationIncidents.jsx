@@ -68,7 +68,7 @@ function getSortRank(incident) {
   return 3;
 }
 
-export default function EmployeeRegistrationIncidents() {
+export default function EmployeeRegistrationIncidents({ isOperator }) {
   const [data, setData] = useState(null);
   const [selectedIncident, setSelectedIncident] = useState(null);
 
@@ -192,6 +192,11 @@ export default function EmployeeRegistrationIncidents() {
   };
 
   const closeSelectedIncident = async () => {
+    if (!isOperator) {
+    setError("Operator role is required to close employee registration incidents.");
+    return;
+    }
+
     if (!selectedIncident) {
       setError("Please select an incident first.");
       return;
@@ -423,10 +428,16 @@ export default function EmployeeRegistrationIncidents() {
                         type="button"
                         className="close-incident-button"
                         onClick={closeSelectedIncident}
-                        disabled={closing}
+                        disabled={closing || !isOperator}
+                        title={!isOperator ? "Operator role is required to close incidents." : ""}
                         >
                         {closing ? "Closing..." : "Close Incident"}
                         </button>
+                        {!isOperator && (
+                        <div className="role-warning">
+                            Viewer access: closing incidents requires Operator role.
+                        </div>
+                        )}
                     </>
                 )}
                 </div>

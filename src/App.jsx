@@ -1,12 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LiveOperations from "./LiveOperations";
 import OpenIncidents from "./OpenIncidents";
 import EmployeeRegistrationIncidents from "./EmployeeRegistrationIncidents";
 import KpiSummary from "./KpiSummary";
 import "./App.css";
 
+async function getCurrentUser() {
+  const response = await fetch("/.auth/me", { cache: "no-store" });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  return data.clientPrincipal || null;
+}
+
 export default function App() {
   const [page, setPage] = useState("live");
+
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then((currentUser) => setUser(currentUser))
+      .finally(() => setAuthLoading(false));
+  }, []);
+
+  const roles = user?.userRoles || [];
+  const isOperator = roles.includes("Operator");
+  const isViewer = roles.includes("Viewer") || isOperator;
 
   return (
     <>
@@ -62,10 +86,23 @@ export default function App() {
         </button>
       </nav>
 
-      {page === "live" && <LiveOperations />}
+      {page === "live" && <LiveOperations isOperator={isOperator} />}
       {page === "open" && <OpenIncidents />}
-      {page === "employee" && <EmployeeRegistrationIncidents />}
+      {page === "employee" && (<EmployeeRegistrationIncidents isOperator={isOperator} /> )}
       {page === "kpi" && <KpiSummary />}
+
+      <div className="portal-user">
+        {authLoading ? (
+          <span>Checking access...</span>
+        ) : user ? (
+          <>
+            <span>{user.userDetails}</span>
+            <a href="/logout">Sign out</a>
+          </>
+        ) : (
+          <a href="/login">Sign in</a>
+        )}
+      </div>
 
       <footer className="portal-footer">
         <div className="portal-footer-inner">

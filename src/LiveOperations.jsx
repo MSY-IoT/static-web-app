@@ -103,7 +103,7 @@ function TileIcon({ title }) {
   return <Server className="icon-gray" size={24} />;
 }
 
-export default function LiveOperations() {
+export default function LiveOperations({ isOperator }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -163,6 +163,11 @@ export default function LiveOperations() {
   //   const incidents = data?.openIncidents || [];
 
   const rebootSelectedDevice = async () => {
+    if (!isOperator) {
+      setError("Operator role is required to trigger a reboot command.");
+    return;
+    }
+
     if (!selectedDevice) {
       setError("Please select a device first.");
       return;
@@ -394,10 +399,15 @@ export default function LiveOperations() {
                     type="button"
                     className="reboot-button"
                     onClick={rebootSelectedDevice}
-                    disabled={rebooting}
-                  >
+                    disabled={rebooting || !isOperator}
+                    title={!isOperator ? "Operator role is required to reboot devices." : ""}>
                     {rebooting ? "Sending reboot..." : "Send Reboot Command"}
                   </button>
+                  {!isOperator && (
+                    <div className="role-warning">
+                      Viewer access: reboot command requires Operator role.
+                    </div>
+                  )}
                 </div>
 
                 {rebootMessage && (
