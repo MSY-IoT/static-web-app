@@ -30,7 +30,7 @@ export default function App() {
 
   const roles = user?.userRoles || [];
   const isOperator = roles.includes("Operator");
-  const isViewer = roles.includes("Viewer") || isOperator;
+  const isViewer = roles.includes("authenticated") || isOperator;
 
   return (
     <>
