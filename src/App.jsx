@@ -2,6 +2,7 @@ import { useState } from "react";
 import LiveOperations from "./LiveOperations";
 import OpenIncidents from "./OpenIncidents";
 import KpiSummary from "./KpiSummary";
+import EmployeeRegistrationIncidents from "./EmployeeRegistrationIncidents";
 import "./App.css";
 
 export default function App() {
@@ -28,6 +29,14 @@ export default function App() {
 
         <button
           type="button"
+          className={page === "employee" ? "nav-active" : "nav-button"}
+          onClick={() => setPage("employee")}
+        >
+          Employee Registration
+        </button>
+
+        <button
+          type="button"
           className={page === "kpi" ? "nav-active" : "nav-button"}
           onClick={() => setPage("kpi")}
         >
@@ -37,6 +46,7 @@ export default function App() {
 
       {page === "live" && <LiveOperations />}
       {page === "open" && <OpenIncidents />}
+      {page === "employee" && <EmployeeRegistrationIncidents />}
       {page === "kpi" && <KpiSummary />}
     </>
   );

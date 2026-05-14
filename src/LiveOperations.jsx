@@ -4,14 +4,17 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
+  PlugZap,
   RefreshCw,
   Server,
-  ShieldAlert,
+  XCircle,
   WifiOff,
 } from "lucide-react";
 import "./App.css";
 
 const ENDPOINT = import.meta.env.VITE_DASHBOARD_ENDPOINT;
+const REBOOT_ENDPOINT = import.meta.env.VITE_REBOOT_ENDPOINT;
+
 const POLL_INTERVAL_MS = 30000;
 
 function normalizeIncidentType(type) {
@@ -63,36 +66,42 @@ function statusClass(status) {
   }
 }
 
-function tileClass(status) {
-  switch (status) {
-    case "Healthy":
-      return "tile healthy";
-    case "Critical":
-      return "tile critical";
-    case "Warning":
-      return "tile warning";
-    default:
-      return "tile";
-  }
-}
-
-function TileIcon({ title, status }) {
-  const cls =
-    status === "Critical"
-      ? "icon-red"
-      : status === "Healthy"
-      ? "icon-green"
-      : "icon-gray";
-
+function tileClassByTitle(title) {
   const lower = String(title || "").toLowerCase();
 
-  if (lower.includes("online")) return <CheckCircle2 className={cls} size={22} />;
-  if (lower.includes("offline")) return <WifiOff className={cls} size={22} />;
-  if (lower.includes("down")) return <ShieldAlert className={cls} size={22} />;
-  if (lower.includes("disconnect")) return <WifiOff className={cls} size={22} />;
-  if (lower.includes("incident")) return <AlertTriangle className={cls} size={22} />;
+  if (lower.includes("online")) return "tile tile-online";
+  if (lower.includes("offline")) return "tile tile-offline";
+  if (lower.includes("down")) return "tile tile-down";
+  if (lower.includes("disconnect")) return "tile tile-disconnected";
+  if (lower.includes("incident")) return "tile tile-down";
 
-  return <Server className={cls} size={22} />;
+  return "tile";
+}
+
+function TileIcon({ title }) {
+  const lower = String(title || "").toLowerCase();
+
+  if (lower.includes("online")) {
+    return <CheckCircle2 className="icon-green" size={24} />;
+  }
+
+  if (lower.includes("offline")) {
+    return <WifiOff className="icon-amber" size={24} />;
+  }
+
+  if (lower.includes("down")) {
+    return <PlugZap className="icon-red" size={24} />;
+  }
+
+  if (lower.includes("disconnect")) {
+    return <XCircle className="icon-gray" size={24} />;
+  }
+
+  if (lower.includes("incident")) {
+    return <AlertTriangle className="icon-red" size={24} />;
+  }
+
+  return <Server className="icon-gray" size={24} />;
 }
 
 export default function LiveOperations() {
@@ -101,6 +110,11 @@ export default function LiveOperations() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [lastClientRefresh, setLastClientRefresh] = useState(null);
+  
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [rebootRequestedBy, setRebootRequestedBy] = useState("");
+  const [rebooting, setRebooting] = useState(false);
+  const [rebootMessage, setRebootMessage] = useState(null);
 
   const fetchData = async (isManual = false) => {
     try {
@@ -145,7 +159,66 @@ export default function LiveOperations() {
     );
   }, [data]);
 
-  const incidents = data?.openIncidents || [];
+  //   const incidents = data?.openIncidents || [];
+
+  const rebootSelectedDevice = async () => {
+    if (!selectedDevice) {
+      setError("Please select a device first.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to send reboot_slave to ${selectedDevice.DeviceId}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setRebooting(true);
+      setError(null);
+      setRebootMessage(null);
+
+      const params = new URLSearchParams();
+      params.set("deviceId", selectedDevice.DeviceId);
+      params.set("confirm", "true");
+      params.set("requestedBy", rebootRequestedBy || "Dashboard User");
+
+      const response = await fetch(`${REBOOT_ENDPOINT}?${params.toString()}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const text = await response.text();
+
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        json = { rawResponse: text };
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          json.error ||
+            json.message ||
+            json.rawResponse ||
+            `HTTP ${response.status}: ${response.statusText}`
+        );
+      }
+
+      setRebootMessage(
+        `Reboot command sent successfully to ${selectedDevice.DeviceId}. Result code: ${
+          json.resultCode ?? "N/A"
+        }`
+      );
+
+      await fetchData(true);
+    } catch (err) {
+      setError(err.message || "Failed to send reboot command.");
+    } finally {
+      setRebooting(false);
+    }
+  }; 
 
   return (
     <main className="page">
@@ -157,7 +230,7 @@ export default function LiveOperations() {
           </div>
           <h1>Operational Summary Dashboard</h1>
           <p>
-            Live device health, heartbeat freshness, and open incident overview
+            Live device health, heartbeat freshness, and controlled device action
             from the Azure Function App endpoint.
           </p>
         </div>
@@ -190,19 +263,20 @@ export default function LiveOperations() {
         <>
           <section className="tiles">
             {tiles.map((tile) => (
-              <div className={tileClass(tile.Status)} key={tile.Title}>
+              <div className={tileClassByTitle(tile.Title)} key={tile.Title}>
                 <div>
                   <p>{tile.Title}</p>
                   <strong>{tile.Value}</strong>
                 </div>
                 <div className="tile-icon">
-                  <TileIcon title={tile.Title} status={tile.Status} />
+                  <TileIcon title={tile.Title} />
                 </div>
               </div>
             ))}
           </section>
 
-          <section className="grid">
+
+          <section className="grid live-only-grid">
             <section className="panel device-panel">
               <div className="panel-title-row">
                 <div>
@@ -220,23 +294,33 @@ export default function LiveOperations() {
                   <thead>
                     <tr>
                       <th>Site</th>
-                      <th>Device</th>
+                      {/* <th>Device</th> */}
                       <th>Status</th>
                       <th>Last heartbeat</th>
                       <th>Age</th>
                       <th>Open incidents</th>
                       <th>Latest incident</th>
-                      <th>Recommended action</th>
+                      {/* <th>Recommended action</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {devices.map((device) => (
-                      <tr key={device.DeviceId}>
+                      <tr
+                          key={device.DeviceId}
+                          className={
+                            selectedDevice?.DeviceId === device.DeviceId ? "selected-row" : ""
+                          }
+                          onClick={() => {
+                            setSelectedDevice(device);
+                            setRebootMessage(null);
+                            setError(null);
+                          }}
+                        >
                         <td>
                           <strong>{device.SiteName}</strong>
-                          <span>{device.SiteCode}</span>
+                          <span>{device.DeviceId}</span>
                         </td>
-                        <td className="mono">{device.DeviceId}</td>
+                        {/* <td className="mono">{device.DeviceId}</td> */}
                         <td>
                           <span className={statusClass(device.CurrentStatus)}>
                             {device.CurrentStatus}
@@ -253,72 +337,86 @@ export default function LiveOperations() {
                             <span>ID {device.LatestOpenIncidentId}</span>
                           )}
                         </td>
-                        <td>{device.RecommendedAction || "—"}</td>
+                        {/* <td>{device.RecommendedAction || "—"}</td> */}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </section>
-
-            <section className="panel incidents-panel">
-              <div className="panel-title-row">
-                <div>
-                  <h2>Open Incidents</h2>
-                  <p>Active incidents requiring follow-up.</p>
-                </div>
-                <AlertTriangle
-                  className={incidents.length ? "icon-red" : "icon-green"}
-                />
-              </div>
-
-              <div className="incident-list">
-                {incidents.length === 0 ? (
-                  <div className="no-incidents">No open incidents.</div>
-                ) : (
-                  incidents.map((incident) => (
-                    <div className="incident-card" key={incident.IncidentId}>
-                      <div className="incident-top">
-                        <div>
-                          <strong>Incident #{incident.IncidentId}</strong>
-                          <p>{incident.SiteName}</p>
-                          <span>{incident.DeviceId}</span>
-                        </div>
-
-                        <span className={statusClass(incident.IncidentType)}>
-                          {normalizeIncidentType(incident.IncidentType)}
-                        </span>
-                      </div>
-
-                      <div className="incident-details">
-                        <div>
-                          <span>Started</span>
-                          {incident.StartAst || "—"}
-                        </div>
-                        <div>
-                          <span>Age</span>
-                          {formatAge(incident.IncidentAgeSec)}
-                        </div>
-                        <div>
-                          <span>Auto action</span>
-                          {incident.AutoActionType || "—"}
-                        </div>
-                        <div>
-                          <span>Result</span>
-                          {incident.AutoActionResultCode || "—"}
-                        </div>
-                      </div>
-
-                      <p className="recommendation">
-                        {incident.RecommendedAction || "—"}
-                      </p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </section>
           </section>
 
+          <section className="panel selected-device-action-panel">
+            <div className="selected-device-action-header">
+              <div>
+                <h2>Selected Device Action</h2>
+                <p>Select a device from the table below, then send a controlled reboot command if needed.</p>
+              </div>
+
+              {selectedDevice && (
+                <span className={statusClass(selectedDevice.CurrentStatus)}>
+                  {selectedDevice.CurrentStatus}
+                </span>
+              )}
+            </div>
+
+            {!selectedDevice ? (
+              <div className="selected-device-empty">
+                Select a device from the Device Current Status table.
+              </div>
+            ) : (
+              <div className="selected-device-action-content">
+                <div className="selected-device-summary">
+                  <div>
+                    <span>Site</span>
+                    <strong>{selectedDevice.SiteName}</strong>
+                    <small>{selectedDevice.SiteCode}</small>
+                  </div>
+
+                  <div>
+                    <span>Device ID</span>
+                    <strong>{selectedDevice.DeviceId}</strong>
+                  </div>
+
+                  <div>
+                    <span>Last Heartbeat</span>
+                    <strong>{selectedDevice.LastHeartbeatAst || "—"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Open Incidents</span>
+                    <strong>{selectedDevice.OpenIncidentCount ?? 0}</strong>
+                  </div>
+                </div>
+
+                <div className="reboot-form">
+                  <label>
+                    Requested by
+                    <input
+                      value={rebootRequestedBy}
+                      onChange={(event) => setRebootRequestedBy(event.target.value)}
+                      placeholder="user name"
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    className="reboot-button"
+                    onClick={rebootSelectedDevice}
+                    disabled={rebooting}
+                  >
+                    {rebooting ? "Sending reboot..." : "Send Reboot Command"}
+                  </button>
+                </div>
+
+                {rebootMessage && (
+                  <div className="reboot-success-message">
+                    {rebootMessage}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
           <section className="footer">
             <div>
               Function App refresh AST:{" "}
