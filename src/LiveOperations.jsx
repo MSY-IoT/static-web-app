@@ -103,7 +103,7 @@ function TileIcon({ title }) {
   return <Server className="icon-gray" size={24} />;
 }
 
-export default function LiveOperations({ isOperator }) {
+export default function LiveOperations({ isOperator, currentUserName }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -111,7 +111,6 @@ export default function LiveOperations({ isOperator }) {
   const [lastClientRefresh, setLastClientRefresh] = useState(null);
   
   const [selectedDevice, setSelectedDevice] = useState(null);
-  const [rebootRequestedBy, setRebootRequestedBy] = useState("");
   const [rebooting, setRebooting] = useState(false);
   const [rebootMessage, setRebootMessage] = useState(null);
 
@@ -187,7 +186,7 @@ export default function LiveOperations({ isOperator }) {
       const params = new URLSearchParams();
       params.set("deviceId", selectedDevice.DeviceId);
       params.set("confirm", "true");
-      params.set("requestedBy", rebootRequestedBy || "Dashboard User");
+      params.set("requestedBy", currentUserName  || "Dashboard User");
 
       const response = await fetch(`${REBOOT_ENDPOINT}?${params.toString()}`, {
         method: "GET",
@@ -386,14 +385,10 @@ export default function LiveOperations({ isOperator }) {
                 </div>
 
                 <div className="reboot-form">
-                  <label>
-                    Requested by
-                    <input
-                      value={rebootRequestedBy}
-                      onChange={(event) => setRebootRequestedBy(event.target.value)}
-                      placeholder="user name"
-                    />
-                  </label>
+                  <div className="readonly-user-field">
+                    <span>Requested by</span>
+                    <strong>{currentUserName || "Dashboard User"}</strong>
+                  </div>
 
                   <button
                     type="button"

@@ -2068,3 +2068,25 @@ td span {
     justify-content: center;
   }
 }
+
+.readonly-user-field {
+  background: #f8fafc;
+  border: 1px solid #d9dee8;
+  border-radius: 14px;
+  padding: 10px 14px;
+  min-height: 48px;
+}
+
+.readonly-user-field span {
+  display: block;
+  color: #5f6b7a;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.readonly-user-field strong {
+  color: #071d49;
+  font-size: 14px;
+  word-break: break-word;
+}

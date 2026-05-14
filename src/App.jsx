@@ -98,7 +98,10 @@ export default function App() {
         </button>
       </nav>
 
-      {page === "live" && <LiveOperations isOperator={isOperator} />}
+      {page === "live" && (<LiveOperations
+        isOperator={isOperator}
+        currentUserName={user?.userDetails || "Dashboard User"}
+        />)}
       {page === "open" && <OpenIncidents />}
       {page === "employee" && (<EmployeeRegistrationIncidents isOperator={isOperator} /> )}
       {page === "kpi" && <KpiSummary />}
