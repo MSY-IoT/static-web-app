@@ -11,8 +11,7 @@ import {
 } from "lucide-react";
 import "./App.css";
 
-const ENDPOINT =
-  "https://fa-iot-ta-djc6hqdda4dgeegm.qatarcentral-01.azurewebsites.net/api/operational-dashboard";
+const ENDPOINT = import.meta.env.VITE_DASHBOARD_ENDPOINT;
 
 const POLL_INTERVAL_MS = 30000;
 
