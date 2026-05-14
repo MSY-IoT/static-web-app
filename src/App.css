@@ -2004,3 +2004,67 @@ td span {
 .portal-title {
   color: #8a1538 !important;
 }
+
+/* =========================================================
+   Mobile navigation quick fix
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .portal-nav,
+  .top-nav {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 12px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    overflow-x: hidden !important;
+  }
+
+  .portal-nav .nav-button,
+  .portal-nav .nav-active,
+  .top-nav .nav-button,
+  .top-nav .nav-active {
+    min-width: 0 !important;
+    width: 100% !important;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 12px;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 760px) {
+  .portal-header-inner {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 12px;
+  }
+
+  .portal-title {
+    font-size: 22px;
+  }
+
+  .portal-subtitle {
+    font-size: 12px;
+  }
+
+  .portal-user {
+    max-width: 100%;
+    width: 100%;
+    justify-content: center;
+  }
+}
