@@ -2090,3 +2090,107 @@ td span {
   font-size: 14px;
   word-break: break-word;
 }
+
+/* =========================================================
+   Mobile fix: Live Operations selected device action panel
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .selected-device-action-panel {
+    padding: 16px !important;
+    margin: 14px 0 !important;
+    overflow: hidden;
+  }
+
+  .selected-device-action-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .selected-device-action-header h2 {
+    font-size: 20px !important;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .selected-device-action-header p {
+    font-size: 13px !important;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .selected-device-action-header .status {
+    align-self: center;
+  }
+
+  .selected-device-action-content {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .selected-device-summary {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .selected-device-summary div {
+    width: 100%;
+    min-width: 0;
+    padding: 12px !important;
+  }
+
+  .selected-device-summary strong,
+  .selected-device-summary small {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .reboot-form {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    max-width: 100% !important;
+    width: 100%;
+  }
+
+  .readonly-user-field {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .readonly-user-field strong {
+    display: block;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .reboot-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 52px;
+    justify-content: center !important;
+    text-align: center;
+    white-space: normal !important;
+    line-height: 1.25;
+    padding: 12px 14px !important;
+  }
+
+  .role-warning,
+  .reboot-success-message {
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+}
