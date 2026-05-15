@@ -890,9 +890,9 @@ td span {
   padding: 26px;
 }
 
-.kpi-layout-improved table {
+/* .kpi-layout-improved table {
   min-width: 1000px;
-}
+} */
 
 .recharts-text,
 .recharts-cartesian-axis-tick-value,
@@ -2192,5 +2192,427 @@ td span {
     text-align: center;
     word-break: break-word;
     overflow-wrap: anywhere;
+  }
+}
+
+/* =========================================================
+   KPI page: Top Problem Sites executive panel
+   ========================================================= */
+
+.top-problem-sites-panel {
+  margin: 18px 0 22px 0;
+  border-top: 4px solid #8a1538;
+}
+
+.top-problem-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.top-problem-summary span {
+  background: #f8fafc;
+  border: 1px solid #d9dee8;
+  color: #071d49;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.top-problem-error {
+  margin-top: 14px;
+}
+
+.top-problem-sites-table {
+  min-width: 1180px;
+}
+
+.top-problem-sites-table td,
+.top-problem-sites-table th {
+  vertical-align: middle;
+}
+
+.top-problem-sites-table td:nth-child(2),
+.top-problem-sites-table td:nth-child(9) {
+  text-align: left;
+}
+
+.recommendation-cell {
+  max-width: 360px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+@media (max-width: 900px) {
+  .top-problem-summary {
+    justify-content: center;
+  }
+}
+
+/* =========================================================
+   KPI page: Auto-Reboot Success and Recovery Impact
+   ========================================================= */
+
+.auto-reboot-impact-panel {
+  margin: 18px 0 22px 0;
+  border-top: 4px solid #8a1538;
+}
+
+.auto-reboot-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  gap: 12px;
+}
+
+.auto-reboot-controls label {
+  color: #334155;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.auto-reboot-controls select {
+  display: block;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 9px 12px;
+  background: white;
+  color: #071d49;
+  font-weight: 800;
+}
+
+.auto-reboot-card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.auto-reboot-card {
+  min-height: 128px;
+}
+
+.auto-reboot-card p {
+  font-size: 12px !important;
+}
+
+.auto-reboot-card strong {
+  font-size: 26px;
+}
+
+.auto-reboot-executive-note {
+  background: #faf7f8;
+  border: 1px solid #ead7df;
+  border-left: 5px solid #8a1538;
+  color: #071d49;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 12px 0 18px 0;
+}
+
+.auto-reboot-impact-table {
+  min-width: 1180px;
+}
+
+.auto-reboot-impact-table td,
+.auto-reboot-impact-table th {
+  vertical-align: middle;
+}
+
+.auto-reboot-impact-table td:nth-child(1),
+.auto-reboot-impact-table td:nth-child(8) {
+  text-align: left;
+}
+
+@media (max-width: 1350px) {
+  .auto-reboot-card-grid {
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .auto-reboot-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auto-reboot-controls {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .auto-reboot-controls label,
+  .auto-reboot-controls select {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   KPI page: Downtime Impact by Site
+   ========================================================= */
+
+.downtime-impact-panel {
+  margin: 18px 0 22px 0;
+  border-top: 4px solid #8a1538;
+}
+
+.downtime-impact-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  gap: 12px;
+}
+
+.downtime-impact-controls label {
+  color: #334155;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.downtime-impact-controls select {
+  display: block;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 9px 12px;
+  background: white;
+  color: #071d49;
+  font-weight: 800;
+}
+
+.downtime-impact-card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.downtime-impact-card {
+  min-height: 128px;
+}
+
+.downtime-impact-card p {
+  font-size: 12px !important;
+}
+
+.downtime-impact-card strong {
+  font-size: 24px;
+}
+
+.downtime-impact-executive-note {
+  background: #faf7f8;
+  border: 1px solid #ead7df;
+  border-left: 5px solid #8a1538;
+  color: #071d49;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 12px 0 18px 0;
+}
+
+.downtime-impact-table {
+  min-width: 1380px;
+}
+
+.downtime-impact-table td,
+.downtime-impact-table th {
+  vertical-align: middle;
+}
+
+.downtime-impact-table td:nth-child(2),
+.downtime-impact-table td:nth-child(11) {
+  text-align: left;
+}
+
+@media (max-width: 1350px) {
+  .downtime-impact-card-grid {
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .downtime-impact-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .downtime-impact-controls {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .downtime-impact-controls label,
+  .downtime-impact-controls select {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   KPI page: Current Risk / Site Health Score
+   ========================================================= */
+
+.site-health-score-panel {
+  margin: 18px 0 22px 0;
+  border-top: 4px solid #8a1538;
+}
+
+.site-health-card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.site-health-card {
+  min-height: 128px;
+}
+
+.site-health-card p {
+  font-size: 12px !important;
+}
+
+.site-health-card strong {
+  font-size: 26px;
+}
+
+.site-health-executive-note {
+  background: #faf7f8;
+  border: 1px solid #ead7df;
+  border-left: 5px solid #8a1538;
+  color: #071d49;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 12px 0 18px 0;
+}
+
+.site-health-score-table {
+  min-width: 1500px;
+}
+
+.site-health-score-table td,
+.site-health-score-table th {
+  vertical-align: middle;
+}
+
+.site-health-score-table td:nth-child(1),
+.site-health-score-table td:nth-child(12),
+.site-health-score-table td:nth-child(13) {
+  text-align: left;
+}
+
+.health-score-value {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  background: #f8fafc;
+  border: 2px solid #d9dee8;
+  color: #071d49;
+  font-weight: 900;
+  font-size: 17px;
+}
+
+.reason-cell {
+  max-width: 300px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.status.watch {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.status.attention {
+  background: #ffedd5;
+  color: #c2410c;
+  border-color: #fed7aa;
+}
+
+@media (max-width: 1350px) {
+  .site-health-card-grid {
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .site-health-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   Fix KPI Summary panels overflowing wider than page
+   ========================================================= */
+
+.page {
+  max-width: 1800px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.panel {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.kpi-layout-improved,
+.site-health-score-panel,
+.top-problem-sites-panel,
+.auto-reboot-impact-panel,
+.downtime-impact-panel {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Prevent large KPI tables from expanding the page */
+.site-health-score-table,
+.top-problem-sites-table,
+.auto-reboot-impact-table,
+.downtime-impact-table {
+  width: max-content;
+  max-width: none;
+}
+
+/* Keep normal smaller tables responsive */
+.table-wrap table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 760px) {
+  .page,
+  .panel,
+  .kpi-layout-improved,
+  .site-health-score-panel,
+  .top-problem-sites-panel,
+  .auto-reboot-impact-panel,
+  .downtime-impact-panel {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
