@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Shield } from "lucide-react";
 import LiveOperations from "./LiveOperations";
 import OpenIncidents from "./OpenIncidents";
 import EmployeeRegistrationIncidents from "./EmployeeRegistrationIncidents";
@@ -55,7 +56,12 @@ export default function App() {
             <span>Checking access...</span>
           ) : user ? (
             <>
-              <span>{user.userDetails}</span>
+              <div className="portal-user-info">
+                <span title={user.userDetails}>{user.userDetails}</span>
+                {isOperator && (
+                  <Shield size={16} className="contributor-icon" title="Contributor role" />
+                )}
+              </div>
               <a href="/logout">Sign out</a>
             </>
           ) : (

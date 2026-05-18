@@ -1961,7 +1961,7 @@ td span {
 
 .portal-user {
   justify-self: end;
-  max-width: 220px;
+  max-width: 280px;
   padding: 8px 12px;
   background: #f8fafc;
   border: 1px solid #d9dee8;
@@ -1972,10 +1972,23 @@ td span {
   white-space: nowrap;
 }
 
+.portal-user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 200px;
+}
+
 .portal-user span {
-  max-width: 120px;
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contributor-icon {
+  flex-shrink: 0;
+  color: #8a1538;
 }
 
 .portal-user a {
