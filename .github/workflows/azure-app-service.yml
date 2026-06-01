@@ -1,0 +1,56 @@
+name: Deploy Dashboard to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "22.x"
+  APP_NAME: "app-iot-attendance-dashboard-prod" # <------------- Update with your Azure App Service name
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React dashboard
+        run: npm run build
+        env:
+          VITE_DASHBOARD_ENDPOINT: ${{ vars.VITE_DASHBOARD_ENDPOINT }}
+          VITE_KPI_ENDPOINT: ${{ vars.VITE_KPI_ENDPOINT }}
+          VITE_EMPLOYEE_INCIDENTS_ENDPOINT: ${{ vars.VITE_EMPLOYEE_INCIDENTS_ENDPOINT }}
+          VITE_CLOSE_EMPLOYEE_INCIDENT_ENDPOINT: ${{ vars.VITE_CLOSE_EMPLOYEE_INCIDENT_ENDPOINT }}
+          VITE_REBOOT_ENDPOINT: ${{ vars.VITE_REBOOT_ENDPOINT }}
+          VITE_TOP_PROBLEM_SITES_ENDPOINT: ${{ vars.VITE_TOP_PROBLEM_SITES_ENDPOINT }}
+          VITE_AUTO_REBOOT_IMPACT_ENDPOINT: ${{ vars.VITE_AUTO_REBOOT_IMPACT_ENDPOINT }}
+          VITE_DOWNTIME_IMPACT_ENDPOINT: ${{ vars.VITE_DOWNTIME_IMPACT_ENDPOINT }}
+          VITE_SITE_HEALTH_SCORE_ENDPOINT: ${{ vars.VITE_SITE_HEALTH_SCORE_ENDPOINT }}
+
+      - name: Prepare deployment package
+        run: |
+          mkdir package
+          cp -r dist package/dist
+          cp server.js package/server.js
+          cp package.json package/package.json
+          cp package-lock.json package/package-lock.json
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./package
