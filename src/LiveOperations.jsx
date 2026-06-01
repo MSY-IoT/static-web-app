@@ -247,8 +247,8 @@ export default function LiveOperations({ isOperator, currentUserName }) {
       {error && (
         <section className="error-box">
           <strong>Could not load endpoint data.</strong> {error}. If this
-          happens after deployment, enable CORS on the Azure Function App for
-          the Static Web App URL.
+          happens after deployment, enable CORS on the Azure Function App for 
+          the current dashboard hosting URL.
         </section>
       )}
 

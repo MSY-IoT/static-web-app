@@ -7,14 +7,24 @@ import KpiSummary from "./KpiSummary";
 import "./App.css";
 
 async function getCurrentUser() {
-  const response = await fetch("/.auth/me", { cache: "no-store" });
+  try {
+    const response = await fetch("/.auth/me", { cache: "no-store" });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return null;
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.clientPrincipal || null;
+  } catch {
     return null;
   }
-
-  const data = await response.json();
-  return data.clientPrincipal || null;
 }
 
 export default function App() {
