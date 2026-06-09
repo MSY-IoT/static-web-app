@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: "22.x"
-  APP_NAME: "app-iot-attendance-dashboard-prod" # <------------- Update with your Azure App Service name
+  APP_NAME: "iot-ta-prod" # <------------- Update with your Azure App Service name
 
 jobs:
   build-and-deploy:
