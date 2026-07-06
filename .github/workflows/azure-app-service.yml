@@ -8,11 +8,13 @@ on:
 
 env:
   NODE_VERSION: "22.x"
-  APP_NAME: "iot-ta-prod" # <------------- Update with your Azure App Service name
+  APP_NAME: "iot-ta-prod"
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    # The App Service is inside a private App Service Environment.
+    # Use a self-hosted runner on the customer jump server/internal network.
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -39,14 +41,20 @@ jobs:
           VITE_AUTO_REBOOT_IMPACT_ENDPOINT: ${{ vars.VITE_AUTO_REBOOT_IMPACT_ENDPOINT }}
           VITE_DOWNTIME_IMPACT_ENDPOINT: ${{ vars.VITE_DOWNTIME_IMPACT_ENDPOINT }}
           VITE_SITE_HEALTH_SCORE_ENDPOINT: ${{ vars.VITE_SITE_HEALTH_SCORE_ENDPOINT }}
+          VITE_ADMIN_EMAILS: ${{ vars.VITE_ADMIN_EMAILS }}
 
       - name: Prepare deployment package
         run: |
+          rm -rf package
           mkdir package
           cp -r dist package/dist
           cp server.js package/server.js
           cp package.json package/package.json
           cp package-lock.json package/package-lock.json
+
+      - name: Install production dependencies in package
+        working-directory: package
+        run: npm ci --omit=dev
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3

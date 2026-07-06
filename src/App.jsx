@@ -27,6 +27,27 @@ async function getCurrentUser() {
   }
 }
 
+function getUserEmail(user) {
+  if (!user) return "";
+
+  const claimEmail = user.claims?.find((claim) =>
+    [
+      "preferred_username",
+      "email",
+      "emails",
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
+    ].includes(claim.typ)
+  )?.val;
+
+  return (claimEmail || user.userDetails || "").toLowerCase();
+}
+
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
 export default function App() {
   const [page, setPage] = useState("live");
 
@@ -39,9 +60,9 @@ export default function App() {
       .finally(() => setAuthLoading(false));
   }, []);
 
-  const roles = user?.userRoles || [];
-  const isOperator = roles.includes("contributor");
-  const isViewer = roles.includes("authenticated") || isOperator;
+  const userEmail = getUserEmail(user);
+  const isOperator = ADMIN_EMAILS.includes(userEmail);
+  const isViewer = !!user;
 
   return (
     <>
@@ -69,13 +90,13 @@ export default function App() {
               <div className="portal-user-info">
                 <span title={user.userDetails}>{user.userDetails}</span>
                 {isOperator && (
-                  <Shield size={16} className="contributor-icon" title="Contributor role" />
+                  <Shield size={16} className="contributor-icon" title="Administrator access" />
                 )}
               </div>
-              <a href="/logout">Sign out</a>
+              <a href="/.auth/logout">Sign out</a>
             </>
           ) : (
-            <a href="/login">Sign in</a>
+            <a href="/.auth/login/aad">Sign in</a>
           )}
         </div>
       </header>
@@ -119,7 +140,12 @@ export default function App() {
         currentUserName={user?.userDetails || "Dashboard User"}
         />)}
       {page === "open" && <OpenIncidents />}
-      {page === "employee" && (<EmployeeRegistrationIncidents isOperator={isOperator} /> )}
+      {page === "employee" && (
+        <EmployeeRegistrationIncidents
+          isOperator={isOperator}
+          currentUserName={user?.userDetails || "Dashboard User"}
+        />
+      )}
       {page === "kpi" && <KpiSummary />}
 
       <footer className="portal-footer">
