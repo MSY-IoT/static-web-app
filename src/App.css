@@ -2630,3 +2630,27 @@ td span {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+.user-role-badge {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.user-role-badge.admin {
+  border-color: #8a1538;
+  background: #fff1f2;
+  color: #8a1538;
+}
+
+.user-role-badge.viewer {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+}

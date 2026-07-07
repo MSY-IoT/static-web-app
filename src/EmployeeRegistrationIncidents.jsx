@@ -68,7 +68,7 @@ function getSortRank(incident) {
   return 3;
 }
 
-export default function EmployeeRegistrationIncidents({ isOperator }) {
+export default function EmployeeRegistrationIncidents({ isOperator, currentUserName }) {
   const [data, setData] = useState(null);
   const [selectedIncident, setSelectedIncident] = useState(null);
 
@@ -76,7 +76,7 @@ export default function EmployeeRegistrationIncidents({ isOperator }) {
   const [errorFilter, setErrorFilter] = useState("ALL");
   const [empSearch, setEmpSearch] = useState("");
 
-  const [closedBy, setClosedBy] = useState("");
+  const [closedBy, setClosedBy] = useState(currentUserName || "");
   const [closureEmpId, setClosureEmpId] = useState("");
   const [closureName, setClosureName] = useState("");
   const [closureNotes, setClosureNotes] = useState("");
@@ -86,6 +86,10 @@ export default function EmployeeRegistrationIncidents({ isOperator }) {
   const [closing, setClosing] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  useEffect(() => {
+    setClosedBy(currentUserName || "");
+  }, [currentUserName]);
 
   const fetchIncidents = async (manual = false) => {
     try {
@@ -185,7 +189,7 @@ export default function EmployeeRegistrationIncidents({ isOperator }) {
     setSelectedIncident(incident);
     setClosureEmpId(incident.EmpId || "");
     setClosureName("");
-    setClosedBy("");
+    setClosedBy(currentUserName || "");
     setClosureNotes("");
     setSuccessMessage(null);
     setError(null);
@@ -193,7 +197,7 @@ export default function EmployeeRegistrationIncidents({ isOperator }) {
 
   const closeSelectedIncident = async () => {
     if (!isOperator) {
-    setError("Operator role is required to close employee registration incidents.");
+    setError("Administrator role is required to close employee registration incidents.");
     return;
     }
 
@@ -429,13 +433,13 @@ export default function EmployeeRegistrationIncidents({ isOperator }) {
                         className="close-incident-button"
                         onClick={closeSelectedIncident}
                         disabled={closing || !isOperator}
-                        title={!isOperator ? "Operator role is required to close incidents." : ""}
+                        title={!isOperator ? "Administrator role is required to close incidents." : ""}
                         >
                         {closing ? "Closing..." : "Close Incident"}
                         </button>
                         {!isOperator && (
                         <div className="role-warning">
-                            Viewer access: closing incidents requires Operator role.
+                            Viewer access: closing incidents requires Administrator role.
                         </div>
                         )}
                     </>

@@ -35,12 +35,13 @@ function getUserEmail(user) {
       "preferred_username",
       "email",
       "emails",
+      "upn",
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
     ].includes(claim.typ)
   )?.val;
 
-  return (claimEmail || user.userDetails || "").toLowerCase();
+  return (claimEmail || user.userDetails || "").trim().toLowerCase();
 }
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "")
@@ -62,7 +63,7 @@ export default function App() {
 
   const userEmail = getUserEmail(user);
   const isOperator = ADMIN_EMAILS.includes(userEmail);
-  const isViewer = !!user;
+  const userRoleLabel = isOperator ? "Administrator" : "Viewer";
 
   return (
     <>
@@ -88,10 +89,15 @@ export default function App() {
           ) : user ? (
             <>
               <div className="portal-user-info">
-                <span title={user.userDetails}>{user.userDetails}</span>
+                <span title={userEmail || user.userDetails}>
+                  {userEmail || user.userDetails}
+                </span>
                 {isOperator && (
                   <Shield size={16} className="contributor-icon" title="Administrator access" />
                 )}
+                <span className={isOperator ? "user-role-badge admin" : "user-role-badge viewer"}>
+                  {userRoleLabel}
+                </span>
               </div>
               <a href="/.auth/logout">Sign out</a>
             </>
@@ -137,13 +143,13 @@ export default function App() {
 
       {page === "live" && (<LiveOperations
         isOperator={isOperator}
-        currentUserName={user?.userDetails || "Dashboard User"}
+        currentUserName={userEmail || user?.userDetails || "Dashboard User"}
         />)}
       {page === "open" && <OpenIncidents />}
       {page === "employee" && (
         <EmployeeRegistrationIncidents
           isOperator={isOperator}
-          currentUserName={user?.userDetails || "Dashboard User"}
+          currentUserName={userEmail || user?.userDetails || "Dashboard User"}
         />
       )}
       {page === "kpi" && <KpiSummary />}
