@@ -21,7 +21,38 @@ async function getCurrentUser() {
     }
 
     const data = await response.json();
-    return data.clientPrincipal || null;
+
+    // Static Web Apps format
+    if (data?.clientPrincipal) {
+      return data.clientPrincipal;
+    }
+
+    // Azure App Service Authentication format
+    if (Array.isArray(data) && data.length > 0) {
+      const identity = data[0];
+
+      return {
+        identityProvider: identity.provider_name || identity.identityProvider || "aad",
+        userId: identity.user_id || identity.userId || "",
+        userDetails:
+          identity.user_id ||
+          identity.userId ||
+          identity.user_claims?.find((claim) =>
+            [
+              "preferred_username",
+              "email",
+              "emails",
+              "upn",
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
+            ].includes(claim.typ)
+          )?.val ||
+          "",
+        claims: identity.user_claims || identity.claims || [],
+      };
+    }
+
+    return null;
   } catch {
     return null;
   }
@@ -38,6 +69,7 @@ function getUserEmail(user) {
       "upn",
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
     ].includes(claim.typ)
   )?.val;
 
